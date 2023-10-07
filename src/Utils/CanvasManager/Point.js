@@ -153,15 +153,15 @@ class Point{
      * @param {CanvasRenderingContext2D} ctx 
      */
     render(ctx){
-        ctx.fillStyle = this.color;
-        ctx.translate(this.x + this.x_size/2,this.y+this.y_size/2);
-        ctx.rotate(this.rotation);
-        ctx.translate((this.x + this.x_size/2)*-1,(this.y + this.y_size/2)*-1);
-        ctx.fillRect(this.x,this.y,this.x_size,this.y_size);
-        ctx.strokeRect(this.x,this.y,this.x_size,this.y_size);
-        ctx.translate(this.x + this.x_size/2,this.y+this.y_size/2);
-        ctx.rotate(-1*(this.rotation));
-        ctx.translate((this.x + this.x_size/2)*-1,(this.y + this.y_size/2)*-1);
+        if(!this.is_static){
+            ctx.save();
+            ctx.fillStyle = this.color;
+            ctx.translate(this.x + this.x_size / 2, this.y + this.y_size / 2);
+            ctx.rotate(this.rotation);
+            ctx.fillRect(-this.x_size / 2, -this.y_size / 2, this.x_size, this.y_size);
+            ctx.restore()
+        }
     }
 }
 
+export default Point;

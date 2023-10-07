@@ -1,4 +1,5 @@
 import Rope from './Rope'
+import Data from './Data';
 
 
 class canvas_manager{
@@ -10,11 +11,14 @@ class canvas_manager{
      */
     constructor(canvas,width,height){
         this.ctx = canvas.getContext('2d');
-        this.ctx.globalCompositeOperation = 'lighter';
+        this.ctx.globalCompositeOperation = 'source-over';
         this.width = width;
         this.height = height;
         this.ropes = [];
-        this.ropes.push(new Rope(this.ctx,50,100,{pos_x:5,pos_y:5,pos_ex:300,pos_ey:100},{color:"#875638",is_static_end:true}));
+        Data.map(rope => this.ropes.push(new Rope(this.ctx,rope.quantiy,rope.positions,rope.options)));
+        for(let x = 0; x < 30; x++){
+            this.ropes.map(rope => rope.update(this.width,this.height))
+        }
     }
 
     /**
@@ -31,7 +35,7 @@ class canvas_manager{
      * @param {number} pos_y 
      */
     handleMouseMove(pos_x,pos_y){
-        this.ropes[0].vibrate("left",pos_x,pos_y);
+        this.ropes.map(rope => rope.vibrate("left",pos_x,pos_y));
     }
     
     /**
@@ -39,7 +43,7 @@ class canvas_manager{
      */
     render(){
         this.ctx.clearRect(0,0,this.width,this.height);
-        this.ropes[0].render(this.width,this.height);
+        this.ropes.map(rope => rope.render(this.width,this.height))
     }
 }
 

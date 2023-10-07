@@ -4,7 +4,6 @@ class Rope{
     /**
      * 
      * @param {CanvasRenderingContext2D} ctx 
-     * @param {number} width 
      * @param {number} quantity 
      * @param {Object{
      * pos_x:number,
@@ -20,9 +19,8 @@ class Rope{
      * dist_between
      * }} options 
      */
-    constructor(ctx,width,quantity,position, options){
+    constructor(ctx,quantity,position, options){
         this.ctx = ctx;
-        this.width = width;
         this.quantity = quantity;
         this.position = position;
         this.options = options;
@@ -32,7 +30,7 @@ class Rope{
         for(let x = 0; x < quantity - 2; x++){
             let pos_x = (Math.abs(position.pos_x - position.pos_ex) / quantity)*x;
             let pos_y = (Math.abs(position.pos_y - position.pos_ey) / quantity)*x;
-            this.points.push(new Point(pos_x,pos_y,0.2,0.2,{color:options.color}));
+            this.points.push(new Point(pos_x,pos_y,0.2,0.2,{color:options.color,gravity:options.gravity,x_size:options.obj_width,y_size:options.obj_height,air_friction:options.air_friction,bounce_type:options.bounce_type}));
         }
         if(options.is_static_end === undefined){
             this.points.push(new Point(position.pos_ex,position.pos_ey,0,0,{is_static:true}));
@@ -94,9 +92,17 @@ class Rope{
      */
     rotation(p1,p2){
         if(p1.x < p2.x){
-            p2.setRotation(-1*(Math.asin(Math.abs(p1.x - p2.x)/this.distance(p1,p2))));
+            if(p1.y < p2.y){
+                p2.setRotation(-1*(Math.asin(Math.abs(p1.x - p2.x)/this.distance(p1,p2))));
+            }else{
+                p2.setRotation((Math.acos(Math.abs(p1.y - p2.y)/this.distance(p1,p2))));
+            }
         }else{
-            p2.setRotation((Math.acos(Math.abs(p1.y - p2.y)/this.distance(p1,p2))));
+            if(p1.y < p2.y){
+                p2.setRotation((Math.acos(Math.abs(p1.y - p2.y)/this.distance(p1,p2))));
+            }else{
+                p2.setRotation(-1*(Math.asin(Math.abs(p1.x - p2.x)/this.distance(p1,p2))));
+            }
         }
     }
 
@@ -118,11 +124,11 @@ class Rope{
     }
 
     /**
-     * Function renders a rope
-     * @param {number} width Canvas width
-     * @param {number} height Canvas height
+     * Function Calculates data without drawing it
+     * @param {number} width 
+     * @param {number} height 
      */
-    render(width,height){
+    update(width,height){
         for(let x = 0; x < this.points.length; x++){
             this.points[x].update(width,height)
         }
@@ -134,6 +140,15 @@ class Rope{
         for(let x = 0; x < this.points.length-1; x++){
             this.rotation(this.points[x],this.points[x+1]);
         }
+    }
+
+    /**
+     * Function renders a rope
+     * @param {number} width Canvas width
+     * @param {number} height Canvas height
+     */
+    render(width,height){
+        this.update(width,height);
         for(let x = 0; x < this.points.length; x++){
             this.points[x].render(this.ctx)
         }
