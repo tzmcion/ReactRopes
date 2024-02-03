@@ -1,3 +1,4 @@
+
 /** 
     Class point is a single point in the canvas where velocity
     is calculated dynamically based on the last posiition of  apoint,
@@ -164,4 +165,35 @@ class Point{
     }
 }
 
-export default Point;
+class EndPoint extends Point{
+    constructor(x,y,vx,vy,image,options){
+        super(x,y,vx,vy,options);
+        this.image = null;
+        this.image = new Image(100,100);
+        this.image.src = image;
+        if(typeof image === 'object'){
+            this.image = null;
+            this.is_static = true;
+        }
+        this.x_size=70;
+        this.y_size=70;
+    }
+
+    render(ctx){
+        this.x-=this.x_size/2;
+        this.y-=this.y_size/4;
+        if(!this.is_static){
+            ctx.save();
+            ctx.fillStyle = this.color;
+            ctx.translate(this.x + this.x_size / 2, this.y + this.y_size / 2);
+            ctx.rotate(this.rotation);
+            if(this.image)
+            ctx.drawImage(this.image,-this.x_size / 2, -this.y_size / 2, this.x_size, this.y_size);
+            ctx.restore()
+        }
+        this.x+=this.x_size/2;
+        this.y+=this.y_size/4;
+    }
+}
+
+export {Point,EndPoint};

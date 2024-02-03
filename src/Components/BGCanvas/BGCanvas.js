@@ -1,44 +1,60 @@
-import React, { useEffect, useState, useRef, useCallback } from 'react'
+import React, { useEffect, useState, useRef} from 'react'
 import Canvas_manager from '../../Utils/CanvasManager/cnavas_manager'
-import useDimensions from '../../hooks/useDimensions'
+import default_options from './Options.js'
+import '../../Utils/FileReader';
 
 import './BGCanvas.scss'
+import { to_blob } from '../../Utils/FileReader';
+
 /**
- * Component is background Canvas for the first page
+ * Renders an image attached to 'ropes'
+ * @param {path} src
+ * @param {number} width width of canvas, rerenders on change
+ * @param {height} height height of canvas, rerenders on change
+ * @param {Object} options options, please see the README
  * @returns React Component
  */
-export default function BGCanvas() {
-  const dimensions = useDimensions();
-  const canvas = useRef(null);
-  const frameId = useRef(0);
-  const [manager,setManager] = useState(null);
+export default function BGCanvas({src,width,height,options = default_options}) {
 
-  const render = useCallback(()=>{
-    manager.render();
-    frameId.current = window.requestAnimationFrame(render);
-  },[manager])
-
-  const mouseMove = useCallback((event)=>{
-    const x = event.clientX;
-    const y = event.clientY;
-    manager.handleMouseMove(x,y);
-  },[manager])
+  const canvas_ref = useRef(null);
+  const [dimensions,set_dimensions] = useState({width:width,height:height});
+  const [file_blob,set_file_blob] = useState(null);
+  const [animator,set_animator] = useState(null);
 
   useEffect(()=>{
-      setManager(new Canvas_manager(canvas.current,dimensions.width,dimensions.height));
-  },[dimensions])
+    if(!Object.keys(options).includes('__control_flag')){
+      throw new Error("Options provided is not valid options type, please import options from our package and change them accordingly");
+    }
+  },[options])
 
   useEffect(()=>{
-      if(manager){
-        window.requestAnimationFrame(render);
-        window.addEventListener('mousemove',mouseMove);
-      }
-      return () => {window.cancelAnimationFrame(frameId.current);window.removeEventListener('mousemove',mouseMove)}
-  },[manager,mouseMove,render])
+    set_dimensions({width:width,height:height});
+  },[width,height])
 
+  useEffect(()=>{
+    to_blob(src).then(blob =>{
+      set_file_blob(blob);
+    })
+  },[src])
+
+  useEffect(()=>{
+    if(file_blob && canvas_ref.current && options){
+      set_animator(new Canvas_manager(canvas_ref.current,dimensions.width,dimensions.height,file_blob,options));
+    }
+  },[dimensions,file_blob,options]);
+
+  useEffect(()=>{
+    return () => {animator && animator.destroy();}
+  },[animator])
+
+  const handleMouseMove = (event) =>{
+    const x = event.clientX - canvas_ref.current.getBoundingClientRect().left;
+    const y = event.clientY - canvas_ref.current.getBoundingClientRect().top;
+    animator && animator.handleMouseMove(x,y);
+  }
 
 
   return (
-    <canvas ref={canvas} width={dimensions.width} height={dimensions.height} className='BGCanvas'>BGCanvas</canvas>
+    <canvas ref={canvas_ref} onMouseMove={handleMouseMove} width={dimensions.width} height={dimensions.height} className='BGCanvas'>BGCanvas</canvas>
   )
 }

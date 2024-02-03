@@ -1,4 +1,4 @@
-import Point from "./Point";
+import {Point,EndPoint} from "./Point";
 
 class Rope{
     /**
@@ -19,25 +19,18 @@ class Rope{
      * dist_between
      * }} options 
      */
-    constructor(ctx,quantity,position, options){
+    constructor(ctx,quantity,options,image){
         this.ctx = ctx;
-        this.quantity = quantity;
-        this.position = position;
         this.options = options;
-        this.color = options.color === undefined ? options.color : 'white';
+        console.log(options);
         this.points = [];
-        this.points.push(new Point(position.pos_x,position.pos_y,0,0,{is_static:true}))
-        for(let x = 0; x < quantity - 2; x++){
-            let pos_x = (Math.abs(position.pos_x - position.pos_ex) / quantity)*x;
-            let pos_y = (Math.abs(position.pos_y - position.pos_ey) / quantity)*x;
-            this.points.push(new Point(pos_x,pos_y,0.2,0.2,{color:options.color,gravity:options.gravity,x_size:options.obj_width,y_size:options.obj_height,air_friction:options.air_friction,bounce_type:options.bounce_type}));
+        this.points.push(new EndPoint(options.pos_x,options.pos_y,0,0,{is_static:true}))
+        for(let x = 1; x < quantity; x++){
+            let pos_x = (Math.abs(options.pos_x - options.pos_ex) / quantity)*x;
+            let pos_y = (Math.abs(options.pos_y - options.pos_ey) / quantity)*x;
+            this.points.push(new Point(pos_x,pos_y,Math.random()*100,Math.random()*20,{color:options.color,gravity:options.gravity,x_size:options.obj_width,y_size:options.obj_height,air_friction:options.air_friction,bounce_type:options.bounce_type}));
         }
-        if(options.is_static_end === undefined){
-            this.points.push(new Point(position.pos_ex,position.pos_ey,0,0,{is_static:true}));
-        }else{
-            if(options.is_static_end === true)
-            this.points.push(new Point(position.pos_ex,position.pos_ey,0,0,{is_static:true}));
-        }
+            this.points.push(new EndPoint(options.pos_ex,options.pos_ey,0,0,image));
     }
 
     /**
@@ -116,8 +109,8 @@ class Rope{
         for(let a = 0; a < this.points.length; a++){
             const point = this.points[a];
             if(point.is_on_point(x,y,1)){
-                point.px = point.x + 50;
-                point.py = point.y + 50;
+                point.px = point.x + 7;
+                point.py = point.y + 7;
                 break;
             }
         }
@@ -128,18 +121,31 @@ class Rope{
      * @param {number} width 
      * @param {number} height 
      */
-    update(width,height){
+    update(width,height,vercel_speed = 5){
         for(let x = 0; x < this.points.length; x++){
             this.points[x].update(width,height)
         }
-        for(let x = 0; x < 5; x++){
+        for(let x = 0; x < vercel_speed; x++){
             for(let x = 0; x < this.points.length-1; x++){
-                this.verlet(this.points[x],this.points[x+1],1);
+                this.verlet(this.points[x],this.points[x+1],5);
             }
         }
         for(let x = 0; x < this.points.length-1; x++){
             this.rotation(this.points[x],this.points[x+1]);
         }
+        this.rotation(this.points[0],this.points[this.points.length-1]);
+    }
+
+    /** 
+    *   Function will cut the rope in half,
+    *   creating one end of rope as this object,
+    *   and returning other half of points to the 
+    *   object that can be created by 
+    */
+    cut_rope(){
+        const old_points = this.points.slice(this.points.length/2,this.points.length);
+        this.points = this.points.slice(0,this.points.length/2);
+        return old_points;
     }
 
     /**
@@ -147,10 +153,10 @@ class Rope{
      * @param {number} width Canvas width
      * @param {number} height Canvas height
      */
-    render(width,height){
-        this.update(width,height);
+    render(width,height,vercel_quantity){
+        this.update(width,height,vercel_quantity);
         for(let x = 0; x < this.points.length; x++){
-            this.points[x].render(this.ctx)
+            this.points[x].render(this.ctx);
         }
     }
 }
