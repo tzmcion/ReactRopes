@@ -7,6 +7,7 @@ class canvas_manager{
      * @param {HTMLCanvas} canvas 
      * @param {number} width 
      * @param {number} height 
+     * @param {image} string path to image rendered from blocks
      */
     constructor(canvas,width,height,image,options){
         this.ctx = canvas.getContext('2d');
@@ -15,12 +16,11 @@ class canvas_manager{
         this.animation_id = 0;
         this.image_blob = image;
         this.ropes = [];
-        const changed_options = options;
-        options.pos_x = width/2;
+        const changed_options = this.__private_check_options(options,width);
         this.ropes.push(new Rope(this.ctx,options.quantity,changed_options,image));
-        for(let x = 0; x < 30; x++){
-            this.ropes.map(rope => rope.update(this.width,this.height))
-        }
+        // for(let x = 0; x < 30; x++){
+        //     this.ropes.map(rope => rope.update(this.width,this.height))
+        // }
         this.__private_start_animation = this.__private_start_animation.bind(this);
         this.__private_start_animation();
     }
@@ -48,13 +48,16 @@ class canvas_manager{
     }
 
 
-
+    /** 
+    *   Method Canels animation frame
+    */
     destroy(){
         window.cancelAnimationFrame(this.animation_id);
     }
     
     /**
      * Private function
+     * Starts animation...
      */
     __private_start_animation(){
         const render_animation = () =>{
@@ -63,6 +66,21 @@ class canvas_manager{
             this.animation_id = window.requestAnimationFrame(render_animation);
         }
         this.animation_id = window.requestAnimationFrame(render_animation);
+    }
+
+    /**
+     * Private function
+     * checks option  and returns them
+     * @param {options} options 
+     */
+    __private_check_options(options,width){
+        const options_edited = {...options};
+        if(options_edited.pos_x === 0){
+            options_edited.pos_x = width / 2;
+        }
+        options_edited.pos_ex = options_edited.pos_x + options_edited.pos_ex;
+        options_edited.pos_y = options_edited.pos_y + options_edited.pos_y;
+        return options_edited;
     }
 }
 

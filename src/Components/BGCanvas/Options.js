@@ -2,8 +2,8 @@ const default_options = {
     quantity: 15, //Quantity of blocks which build the line
     pos_x: 0, //X Position of anchor of rope, if set to 0 is replaced by width of canvas divided by 2
     pos_y: 0, //Y Position of anchor of rope
-    pos_ex: 0, //X Position of initial spawn of the image
-    pos_ey: 0, //Y Position of initial spawn of the image
+    pos_ex: 10, //X offset Position of initial spawn of the image
+    pos_ey: 0, //Y offset Position of initial spawn of the image
     obj_height:8, //Height of single block in the line
     obj_width:2, //Width of single block in the line
     color: "#000", //Color of the blocks creating the rope

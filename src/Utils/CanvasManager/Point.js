@@ -66,7 +66,7 @@ class Point{
                 of_wall_bounce = this.wall_bounce(width,height,vx,vy);
                 if(this.bounce_type <= -2){
                     this.ground_bounce(width,height,vx,vy,of_wall_bounce);
-                    if(this.bounce <= -3){
+                    if(this.bounce_type <= -3){
                         this.celling_bounce(width,height,vx,vy);
                     }
                 }

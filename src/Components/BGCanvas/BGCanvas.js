@@ -1,9 +1,6 @@
 import React, { useEffect, useState, useRef} from 'react'
 import Canvas_manager from '../../Utils/CanvasManager/cnavas_manager'
 import default_options from './Options.js'
-import '../../Utils/FileReader';
-
-import './BGCanvas.scss'
 import { to_blob } from '../../Utils/FileReader';
 
 /**

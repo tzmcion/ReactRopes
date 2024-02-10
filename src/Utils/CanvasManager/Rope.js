@@ -5,19 +5,8 @@ class Rope{
      * 
      * @param {CanvasRenderingContext2D} ctx 
      * @param {number} quantity 
-     * @param {Object{
-     * pos_x:number,
-     * pos_y:number,
-     * pos_ex:number,
-     * pos_ey:number
-     * }} position 
-     * @param {Object{
-     * color:string,
-     * gravity:number,
-     * obj_width,
-     * obj_height,
-     * dist_between
-     * }} options 
+     * @param {options} options
+     * @param {string} image path to image
      */
     constructor(ctx,quantity,options,image){
         this.ctx = ctx;
@@ -26,9 +15,9 @@ class Rope{
         this.points = [];
         this.points.push(new EndPoint(options.pos_x,options.pos_y,0,0,{is_static:true}))
         for(let x = 1; x < quantity; x++){
-            let pos_x = (Math.abs(options.pos_x - options.pos_ex) / quantity)*x;
-            let pos_y = (Math.abs(options.pos_y - options.pos_ey) / quantity)*x;
-            this.points.push(new Point(pos_x,pos_y,Math.random()*100,Math.random()*20,{color:options.color,gravity:options.gravity,x_size:options.obj_width,y_size:options.obj_height,air_friction:options.air_friction,bounce_type:options.bounce_type}));
+            const pos_x = ((options.pos_ex - options.pos_x) / quantity)*x + options.pos_x;
+            const pos_y = ((options.pos_ey - options.pos_y) / quantity)*x + options.pos_y;
+            this.points.push(new Point(pos_x,pos_y,0,0,{color:options.color,gravity:options.gravity,x_size:options.obj_width,y_size:options.obj_height,air_friction:options.air_friction,bounce_type:options.bounce_type}));
         }
             this.points.push(new EndPoint(options.pos_ex,options.pos_ey,0,0,image));
     }
