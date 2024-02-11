@@ -1,6 +1,6 @@
 import React from 'react'
 import BGCanvas from '../../Components/BGCanvas/BGCanvas'
-import placeholder_img from './logo192.png';
+import placeholder_img from './may18.png';
 import './main.scss'
 
 export default function Main() {

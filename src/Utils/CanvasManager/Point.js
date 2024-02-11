@@ -35,10 +35,12 @@ class Point{
         this.bounce_type = options.bounce_type === undefined ? -2 : options.bounce_type;
         this.friction = options.friction === undefined ? 0.95 : options.friction;
         this.air_friction = options.air_friction === undefined ? 0.99 : options.air_friction;
-        this.y_size = options.y_size === undefined ? 8 : options.y_size;
-        this.x_size = options.x_size === undefined ? 4 : options.x_size;
+        this.y_size = options.obj_height === undefined ? 8 : options.obj_height;
+        this.x_size = options.obj_width === undefined ? 4 : options.obj_width;
         this.is_static = options.is_static === undefined ? false : options.is_static;
         this.color = options.color === undefined ? 'black' : options.color;
+        this.radial_blocks = options.radial_blocks === undefined ? false : options.radial_blocks;
+        this.weight = 1;
         this.rotation = 0;
         this.mouse_yes_time = 0;
         this.is_clicked = false;
@@ -52,11 +54,15 @@ class Point{
         this.rotation = rotation;
     }
 
+    set_y_size(size){
+        this.y_size = size;
+    }
+
     update(width,height){
         if(!this.is_static){
             let vx = (this.x - this.px) * this.air_friction;
             let vy = (this.y - this.py) * this.air_friction;
-            vy += this.gravity;
+            vy += this.gravity * this.weight;
             this.px = this.x;
             this.py = this.y;
             this.x += vx;
@@ -107,8 +113,8 @@ class Point{
      */
     celling_bounce(width,height,vx,vy){
         if(this.y < 0 + this.y_size ){
-            this.y = 0 + this.y_size;
-            this.py = vy + this.y_size;
+            this.y = this.y_size;
+            this.py = this.y_size - (vy)*this.bounce;
         }
     }
 
@@ -155,6 +161,14 @@ class Point{
      */
     render(ctx){
         if(!this.is_static){
+            if(this.radial_blocks){
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x,this.y,this.x_size,0,Math.PI*2);
+                ctx.fill();
+                ctx.closePath();
+                return;
+            }
             ctx.save();
             ctx.fillStyle = this.color;
             ctx.translate(this.x + this.x_size / 2, this.y + this.y_size / 2);
@@ -166,8 +180,13 @@ class Point{
 }
 
 class EndPoint extends Point{
-    constructor(x,y,vx,vy,image,options){
+    constructor(x,y,vx,vy,image,options,static_p = true){
         super(x,y,vx,vy,options);
+        if(static_p){
+            this.is_static = true;
+            this.image = null;
+            return;
+        }
         this.image = null;
         this.image = new Image(100,100);
         this.image.src = image;
@@ -175,24 +194,27 @@ class EndPoint extends Point{
             this.image = null;
             this.is_static = true;
         }
-        this.x_size=70;
-        this.y_size=70;
+        this.x_size=options.img_size_x;
+        this.y_size=options.img_size_y;
+        this.offset_x = options.img_offset_x;
+        this.offset_y = options.img_offset_y;
+        this.weight = options.img_weight;
     }
 
     render(ctx){
-        this.x-=this.x_size/2;
-        this.y-=this.y_size/4;
         if(!this.is_static){
-            ctx.save();
-            ctx.fillStyle = this.color;
-            ctx.translate(this.x + this.x_size / 2, this.y + this.y_size / 2);
-            ctx.rotate(this.rotation);
-            if(this.image)
-            ctx.drawImage(this.image,-this.x_size / 2, -this.y_size / 2, this.x_size, this.y_size);
-            ctx.restore()
-        }
-        this.x+=this.x_size/2;
-        this.y+=this.y_size/4;
+        this.x-=this.offset_x;
+        this.y-=this.offset_y;
+        ctx.save();
+        ctx.fillStyle = this.color;
+        ctx.translate(this.x + this.x_size / 2, this.y + this.y_size / 2);
+        ctx.rotate(this.rotation);
+        if(this.image)
+        ctx.drawImage(this.image,-this.x_size / 2, -this.y_size / 2, this.x_size, this.y_size);
+        ctx.restore()
+        this.x+=this.offset_x;
+        this.y+=this.offset_y;
+    }
     }
 }
 

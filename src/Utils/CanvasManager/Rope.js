@@ -1,149 +1,100 @@
 import {Point,EndPoint} from "./Point";
 
 class Rope{
-    /**
-     * 
-     * @param {CanvasRenderingContext2D} ctx 
-     * @param {number} quantity 
-     * @param {options} options
-     * @param {string} image path to image
-     */
     constructor(ctx,quantity,options,image){
         this.ctx = ctx;
         this.options = options;
         console.log(options);
         this.points = [];
-        this.points.push(new EndPoint(options.pos_x,options.pos_y,0,0,{is_static:true}))
+        this.points.push(new EndPoint(options.pos_x,options.pos_y,0,0,null))
         for(let x = 1; x < quantity; x++){
             const pos_x = ((options.pos_ex - options.pos_x) / quantity)*x + options.pos_x;
             const pos_y = ((options.pos_ey - options.pos_y) / quantity)*x + options.pos_y;
-            this.points.push(new Point(pos_x,pos_y,0,0,{color:options.color,gravity:options.gravity,x_size:options.obj_width,y_size:options.obj_height,air_friction:options.air_friction,bounce_type:options.bounce_type}));
+            this.points.push(new Point(pos_x,pos_y,0,0,options));
         }
-            this.points.push(new EndPoint(options.pos_ex,options.pos_ey,0,0,image));
+        this.points.push(new EndPoint(options.pos_ex,options.pos_ey,0,0,image,options,false));
     }
 
-    /**
-     * @param {number} p1 
-     * @param {number} p2 
-     * @returns {number} distance between 2 points 
-     */
     distance(p1,p2){
         const l1 = p1.x - p2.x;
         const l2 = p1.y - p2.y;
         return Math.sqrt(l1 * l1+l2 * l2);
     }
 
-    /**
-     * Function is a varlet-integration between 2 points
-     * it takes a length which is the acceptable distance
-     * @param {number} p1 
-     * @param {number} p2 
-     * @param {number} length 
-     */
+    //DONE
     verlet(p1,p2,length){
-        let dx = p1.x - p2.x;
-        let dy = p1.y - p2.y;
-        let ds = this.distance(p1,p2);
-        let dif = length - ds;
-        let percent = dif / ds / 2;
-        let offsetX = dx * percent;
-        let offsetY = dy * percent;
-
+        const dx = p1.x - p2.x;
+        const dy = p1.y - p2.y;
+        const ds = this.distance(p1,p2);
+        const dif = length - ds;
+        const percent = dif / ds / 2;
+        const offsetX = dx * percent;
+        const offsetY = dy * percent;
         if(p1.is_static !== true){
-            if(p2.is_static){
-                offsetX = offsetX * 2;
-                offsetY = offsetY * 2;
-            }
             p1.x += offsetX;
             p1.y += offsetY;
         }
         if(p2.is_static !== true){
-            if(p1.is_static){
-                offsetX = offsetX * 2;
-                offsetY = offsetY * 2;
-            }
             p2.x -= offsetX;
             p2.y -= offsetY;
         }
     }
 
-    /**
-     * Functions sets the rotation of each rectangle so they face each other
-     * @param {number} p1 
-     * @param {number} p2 
-     */
+    //DONE
     rotation(p1,p2){
         if(p1.x < p2.x){
             if(p1.y < p2.y){
                 p2.setRotation(-1*(Math.asin(Math.abs(p1.x - p2.x)/this.distance(p1,p2))));
             }else{
-                p2.setRotation((Math.acos(Math.abs(p1.y - p2.y)/this.distance(p1,p2))));
+                p2.setRotation((Math.acos(Math.abs(p1.y - p2.y)/this.distance(p1,p2))) - Math.PI);
             }
         }else{
             if(p1.y < p2.y){
                 p2.setRotation((Math.acos(Math.abs(p1.y - p2.y)/this.distance(p1,p2))));
             }else{
-                p2.setRotation(-1*(Math.asin(Math.abs(p1.x - p2.x)/this.distance(p1,p2))));
+                p2.setRotation(-1*(Math.asin(Math.abs(p1.x - p2.x)/this.distance(p1,p2))) + Math.PI);
             }
         }
     }
 
-    /**
-     * Function creates a vibration of the rope for x and y
-     * @param {"left" | "right"} side 
-     * @param {number} x
-     * @param {number} y 
-     */
     vibrate(side,x,y){
         for(let a = 0; a < this.points.length; a++){
             const point = this.points[a];
-            if(point.is_on_point(x,y,1)){
-                point.px = point.x + 7;
-                point.py = point.y + 7;
+            if(point.is_on_point(x,y,this.options.mouse_detect_distortion)){
+                //Here will be done differently later
+                point.px = point.x + 10;
+                point.py = point.y + 10;
                 break;
             }
         }
     }
 
-    /**
-     * Function Calculates data without drawing it
-     * @param {number} width 
-     * @param {number} height 
-     */
+    //DONE
     update(width,height,vercel_speed = 5){
         for(let x = 0; x < this.points.length; x++){
             this.points[x].update(width,height)
         }
         for(let x = 0; x < vercel_speed; x++){
             for(let x = 0; x < this.points.length-1; x++){
-                this.verlet(this.points[x],this.points[x+1],5);
+                this.verlet(this.points[x],this.points[x+1],this.options.verlet_target_distance);
             }
         }
         for(let x = 0; x < this.points.length-1; x++){
             this.rotation(this.points[x],this.points[x+1]);
+            this.points[x].set_y_size(this.distance(this.points[x],this.points[x+1]));
         }
-        this.rotation(this.points[0],this.points[this.points.length-1]);
+        this.rotation(this.points[this.options.img_rotate_target_index],this.points[this.points.length-1]);
     }
 
-    /** 
-    *   Function will cut the rope in half,
-    *   creating one end of rope as this object,
-    *   and returning other half of points to the 
-    *   object that can be created by 
-    */
     cut_rope(){
         const old_points = this.points.slice(this.points.length/2,this.points.length);
         this.points = this.points.slice(0,this.points.length/2);
         return old_points;
     }
 
-    /**
-     * Function renders a rope
-     * @param {number} width Canvas width
-     * @param {number} height Canvas height
-     */
-    render(width,height,vercel_quantity){
-        this.update(width,height,vercel_quantity);
+    //DONE
+    render(width,height){
+        this.update(width,height,this.options.verlet_calculate_per_frame);
         for(let x = 0; x < this.points.length; x++){
             this.points[x].render(this.ctx);
         }
