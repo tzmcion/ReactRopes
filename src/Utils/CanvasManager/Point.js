@@ -42,6 +42,8 @@ class Point{
         this.radial_blocks = options.radial_blocks === undefined ? false : options.radial_blocks;
         this.weight = 1;
         this.rotation = 0;
+        this.offset_x = 0;
+        this.offset_y = 0;
         this.mouse_yes_time = 0;
         this.is_clicked = false;
     }
@@ -143,8 +145,10 @@ class Point{
      * @returns {boolean} true/false
      */
     is_on_point(x,y,distortion = 4){
-        if(x > this.x - distortion && x < this.x + this.x_size + distortion){
-            if(y > this.y - distortion && y < this.y + this.y_size + distortion){
+        const real_x = this.x - this.offset_x;
+        const real_y = this.y - this.offset_y;
+        if(x > real_x - distortion && x < real_x + this.x_size + distortion){
+            if(y > real_y - distortion && y < real_y + this.y_size + distortion){
                 const date = Date.now();
                 if(date - this.mouse_yes_time >= 100){
                     this.mouse_yes_time = date;
@@ -176,6 +180,35 @@ class Point{
             ctx.fillRect(-this.x_size / 2, -this.y_size / 2, this.x_size, this.y_size);
             ctx.restore()
         }
+    }
+
+    /**
+     * Method applies speed to the point
+     */
+    set_speed(vx = 0,vy = 0){
+        this.px = this.px + vx;
+        this.py = this.py + vy;
+    }
+
+    /**
+     * Method sets different color for some time
+     */
+    set_color(color,timeout = 2000){
+        const org = this.color;
+        this.color = color;
+        setTimeout(()=>{
+            this.color = org;
+        },timeout)
+    }
+
+    set_size(x_size = this.x_size,y_size = this.y_size,timeout = 2000){
+        const org = {x_s: this.x_size, y_s: this.y_size};
+        this.x_size = x_size;
+        this.y_size = y_size;
+        setTimeout(()=>{
+            this.x_size = org.x_s;
+            this.y_size = org.y_s;
+        },timeout)
     }
 }
 

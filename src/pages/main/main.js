@@ -1,13 +1,19 @@
 import React from 'react'
-import BGCanvas from '../../Components/BGCanvas/BGCanvas'
-import placeholder_img from './may18.png';
+import {RopeImage,RopeOptions} from '../../Components/BGCanvas'
+import placeholder_img from './caution.png';
 import './main.scss'
 
 export default function Main() {
 
+  const mouseHandler = (point,event) =>{
+    //point.set_speed(Math.random()*50+50,-5);
+  }
+
+  const options = {...RopeOptions};
+
   return (
     <div>
-        <BGCanvas width={500} height={500} src={placeholder_img}/>
+        <RopeImage width={500} onHover={mouseHandler} options={options} height={500} src={placeholder_img}/>
     </div>
   )
 }

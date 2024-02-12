@@ -1,4 +1,8 @@
 #ReactRopes
 
-React Ropes will be a npm package providing a 'hanging' image on the rope
-Development is still in progress
+Dear Reader,
+
+This npm package is almost ready
+All left is to write good Readme
+
+Take care!

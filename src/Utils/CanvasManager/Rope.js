@@ -6,6 +6,7 @@ class Rope{
         this.options = options;
         console.log(options);
         this.points = [];
+        this.hovertt = 0;
         this.points.push(new EndPoint(options.pos_x,options.pos_y,0,0,null))
         for(let x = 1; x < quantity; x++){
             const pos_x = ((options.pos_ex - options.pos_x) / quantity)*x + options.pos_x;
@@ -57,16 +58,20 @@ class Rope{
         }
     }
 
-    vibrate(side,x,y){
-        for(let a = 0; a < this.points.length; a++){
-            const point = this.points[a];
-            if(point.is_on_point(x,y,this.options.mouse_detect_distortion)){
-                //Here will be done differently later
-                point.px = point.x + 10;
-                point.py = point.y + 10;
-                break;
+    mouseIntegration(x,y,handler){
+        const now = Date.now();
+        if(now - this.hovertt > this.options.mouse_hover_timeout)
+        this.points.forEach(point =>{
+            const distortion = this.options.mouse_hover_distortion;
+            if(point.is_on_point(x,y,distortion)){
+                handler(point);
+                this.hovertt = now;
             }
-        }
+        })
+    }
+
+    handleMovement(v_x,v_y){
+        this.points[this.points.length-1].set_speed(v_x,v_y);
     }
 
     //DONE
@@ -81,7 +86,9 @@ class Rope{
         }
         for(let x = 0; x < this.points.length-1; x++){
             this.rotation(this.points[x],this.points[x+1]);
-            this.points[x].set_y_size(this.distance(this.points[x],this.points[x+1]));
+            if(this.options.verlet_extend_length){
+                this.points[x].set_y_size(this.distance(this.points[x],this.points[x+1]));
+            }
         }
         this.rotation(this.points[this.options.img_rotate_target_index],this.points[this.points.length-1]);
     }

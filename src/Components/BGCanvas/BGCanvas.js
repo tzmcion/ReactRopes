@@ -11,10 +11,11 @@ import { to_blob } from '../../Utils/FileReader';
  * @param {Object} options options, please see the README
  * @returns React Component
  */
-export default function BGCanvas({src,width,height,options = default_options}) {
+export default function BGCanvas({src,width,height,onHover = () =>{},options = default_options}) {
 
   const canvas_ref = useRef(null);
   const [dimensions,set_dimensions] = useState({width:width,height:height});
+  const [position,set_position] = useState({left:0,right:0});
   const [file_blob,set_file_blob] = useState(null);
   const [animator,set_animator] = useState(null);
 
@@ -47,8 +48,22 @@ export default function BGCanvas({src,width,height,options = default_options}) {
   const handleMouseMove = (event) =>{
     const x = event.clientX - canvas_ref.current.getBoundingClientRect().left;
     const y = event.clientY - canvas_ref.current.getBoundingClientRect().top;
-    animator && animator.handleMouseMove(x,y);
+    animator && animator.handleMouseMove(x,y,(point) =>{onHover(point,event)});
   }
+
+  useEffect(()=>{
+      var interval = 0;
+      if(options.auto_movement_detection){
+        if(animator){
+          animator.set_initial_pos(canvas_ref.current.getBoundingClientRect().left,canvas_ref.current.getBoundingClientRect().top);
+          interval = setInterval(()=>{
+            if(canvas_ref.current)
+            animator.set_last_pos(canvas_ref.current.getBoundingClientRect().left,canvas_ref.current.getBoundingClientRect().top);
+          },options.movement_detection_delay)
+        }
+      }
+      return () =>{if(interval)clearInterval(interval);}
+  },[animator,options])
 
 
   return (
