@@ -10,7 +10,7 @@ const default_options = {
     img_size_y:70, // Y size of the image
     img_offset_x: 0, // X offset of the image attached to the last block of the rope, if 0 set to half of the width;
     img_offset_y: 0, // Y offset of image attached to the last block of the rope, if 0 then is calculated to 80% of immage
-    img_weight:2, // Weight of the image
+    img_weight:1, // Weight of the image
     img_rotate_target_index:0, // Reference point which img rotation is based of, can be from range 0 to quantity-2
     color: "#000", //Color of the blocks creating the rope, try transparent ;)
     gravity:0.5, //Gravity strength, the higher the number, the gigher is gravity pulling down force per frame
@@ -25,8 +25,8 @@ const default_options = {
     mouse_hover_distortion:1,  // how big is the radius of mouse interaction with the block, as strictly on the block might be difficult to achieve
     mouse_hover_timeout:1000, //  timeout between captures of mouse
     auto_movement_detection:true, // Automatically detects the movement of canvas (using css) and adjust the momentum
-    movement_detection_delay:100, // Delay of the detection, must stay over 100 to work properly
-    movement_detection_force:0.1, // Multiplier for movement detection force 
+    movement_detection_delay:40, // Delay of the detection, must stay over 100 to work properly
+    movement_detection_force:0.3, // Multiplier for movement detection force 
     __control_flag:true //Used to check if options inputed are imported from this pattern
   }
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef} from 'react'
-import Canvas_manager from '../../Utils/CanvasManager/cnavas_manager'
+import Canvas_manager from './Utils/CanvasManager/cnavas_manager'
 import default_options from './Options.js'
-import { to_blob } from '../../Utils/FileReader';
+import { to_blob } from './Utils/FileReader';
 
 /**
  * Renders an image attached to 'ropes'
@@ -15,7 +15,6 @@ export default function BGCanvas({src,width,height,onHover = () =>{},options = d
 
   const canvas_ref = useRef(null);
   const [dimensions,set_dimensions] = useState({width:width,height:height});
-  const [position,set_position] = useState({left:0,right:0});
   const [file_blob,set_file_blob] = useState(null);
   const [animator,set_animator] = useState(null);
 
@@ -55,10 +54,9 @@ export default function BGCanvas({src,width,height,onHover = () =>{},options = d
       var interval = 0;
       if(options.auto_movement_detection){
         if(animator){
-          animator.set_initial_pos(canvas_ref.current.getBoundingClientRect().left,canvas_ref.current.getBoundingClientRect().top);
           interval = setInterval(()=>{
             if(canvas_ref.current)
-            animator.set_last_pos(canvas_ref.current.getBoundingClientRect().left,canvas_ref.current.getBoundingClientRect().top);
+            animator.set_last_pos()
           },options.movement_detection_delay)
         }
       }

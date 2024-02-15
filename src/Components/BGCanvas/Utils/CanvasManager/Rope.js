@@ -79,7 +79,7 @@ class Rope{
         for(let x = 0; x < this.points.length; x++){
             this.points[x].update(width,height)
         }
-        for(let x = 0; x < vercel_speed; x++){
+        for(let y = 0; y < vercel_speed; y++){
             for(let x = 0; x < this.points.length-1; x++){
                 this.verlet(this.points[x],this.points[x+1],this.options.verlet_target_distance);
             }
@@ -90,7 +90,7 @@ class Rope{
                 this.points[x].set_y_size(this.distance(this.points[x],this.points[x+1]));
             }
         }
-        this.rotation(this.points[this.options.img_rotate_target_index],this.points[this.points.length-1]);
+        //this.rotation(this.points[this.options.img_rotate_target_index],this.points[this.points.length-1]);
     }
 
     cut_rope(){
