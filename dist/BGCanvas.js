@@ -4,7 +4,7 @@ import Canvas_manager from './Utils/CanvasManager/canvas_manager';
 import { default_options } from './Options';
 import { to_blob } from './Utils/FileReader';
 export default function BGCanvas(_a) {
-    var src = _a.src, width = _a.width, height = _a.height, _b = _a.onHover, onHover = _b === void 0 ? function () { } : _b, _c = _a.options, options = _c === void 0 ? default_options : _c;
+    var src = _a.src, width = _a.width, height = _a.height, id = _a.id, className = _a.className, _b = _a.onHover, onHover = _b === void 0 ? function () { } : _b, _c = _a.options, options = _c === void 0 ? default_options : _c;
     var canvas_ref = useRef(null);
     var _d = useState({ width: width, height: height }), dimensions = _d[0], set_dimensions = _d[1];
     var _e = useState(), file_blob = _e[0], set_file_blob = _e[1];
@@ -51,5 +51,5 @@ export default function BGCanvas(_a) {
         return function () { if (interval)
             clearInterval(interval); };
     }, [animator, options]);
-    return (_jsx("canvas", { ref: canvas_ref, onMouseMove: handleMouseMove, width: dimensions.width, height: dimensions.height, className: 'BGCanvas', children: "BGCanvas" }));
+    return (_jsx("canvas", { className: className, id: id, ref: canvas_ref, onMouseMove: handleMouseMove, width: dimensions.width, height: dimensions.height }));
 }

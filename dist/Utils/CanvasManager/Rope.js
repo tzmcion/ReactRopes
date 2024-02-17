@@ -27,7 +27,6 @@ var Rope = /** @class */ (function () {
         });
         this.hover = 0;
         this.points = [];
-        console.log(this.options);
         this.points.push(new EndPoint(options.pos_x, options.pos_y, 0, 0, options, true));
         for (var x = 1; x < quantity; x++) {
             var pos_x = ((options.pos_ex - options.pos_x) / quantity) * x + options.pos_x;

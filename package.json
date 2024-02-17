@@ -1,7 +1,7 @@
 {
   "name": "react-image-rope",
   "version": "1.0.0",
-  "description": "hanging image on the rope with cursor and movement integration",
+  "description": "A tool do display image as dynamicaly animated object on a line or rope",
   "repository": "https://github.com/tzmcion/ReactRopes",
   "main": "./dist/index.cjs.js",
   "module": "./dist/index.es.js",

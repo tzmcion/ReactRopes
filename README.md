@@ -1,7 +1,8 @@
 # React Ropes
 
-React library to implement behavior like rope-hanging objects
+A tool do display image as dynamicaly animated object on a line or rope
 <br />
+<a href='https://www.genomica.pl/program'>Example on Genomica website</a>
 <img src='https://github.com/tzmcion/ReactRopes/assets/64361206/fc9126ff-94d3-41cc-9423-f50899403eed' alt='demo gif' width='250' />
 ## Usage
 
@@ -17,14 +18,11 @@ Import rope-image from the package and image which you want to render
 import {RopeImage} from 'react-image-rope';
 import my_image from './my_image.png'  //.gif is not supported
 ```
-Currently the package is not supporting adding class or id to id (sorry...) <br />
-Therefore it needs to be wrapped inside div or any other container to freely move around <br />
-Consequently, to have a class name, we need to setup component in a div <br />
+
+Than use in the component:
 
 ```jsx
-    <div className="Your-class">
-        <RopeImage className='dada' width={250} height={250} src={my_image}/>
-    </div>
+    <RopeImage className='LoveU' width={250} height={250} src={my_image}/>
 ```
 
 ## Options
@@ -47,13 +45,32 @@ export default function MyComponent(){
   options.radial_blocks = true; //changing if the rope is build out of wheels or rectangles
 
   return(
-    <div className="Your-class">
           //adding options prop to the RopeImage component
-          <RopeImage className='dada' width={250} height={250} options={options} src={my_image}/>
-    </div>
+          <RopeImage className='LoveU' width={250} height={250} options={options} src={my_image}/>
 )}
 ```
-To see all the options open the package file, in the package called Options.ts <br />
+
+###Advanced Options:
+
+Here is a description of more advanced options:
+
+* img_rotate_target_index
+    This option sets the reference point for rotation of the image. By default it is set to the anchor point of the rope, therefore index 0.
+* bounce_type
+    This options can be set either to -1,-2,-3 or 0
+    -1 allows only bounces off the floor
+    -2 allows bounces off the floor and walls
+    -3 allows bounces from every wall of rectangle
+    0 is no bounces at all
+
+* verlet_calculation_per_frame
+    Sets how much the correction of the objects is calculated per one frame
+    Package callculates the disproportion between real distance and target distance betwen blocks, and tries to correct it. The more time it does it per frame, the real distance lim->target distance, but it will never reach it exactly. In other words, the more calculations, the more realistic the integration looks, but it costs with the speed, and to much calculations looks very artificial
+
+* verlet_extend_length
+    Extends the lenght of the object to always cover the holes between objects building the line. Can look very blank/flat when used
+
+To see all the options open the package file called Options.ts <br />
 react-rope-image/src/Options.ts <br />
 All are described with comments
 
@@ -82,7 +99,7 @@ import {RopeImage,RopeOptions,Point} from 'react-image-rope'
 Then we can just add the handler to the RopeImage
 
 ```js
-<RopeImage className='dada' width={250} height={250} onHover={onPointHover}/>
+<RopeImage className='LoveU' width={250} height={250} onHover={onPointHover}/>
 ```
 
 Currently package provides only 2 function to manipulate point on hover: <br />
@@ -99,10 +116,9 @@ Have fun with it!! <br />
 Package created by tzmcion -- Tymoteusz Apriasz <br />
 https://www.linkedin.com/in/tymoteusz-apriasz-2ba8501a6/
 
-Check out my other projects!
+Want to contribute?
+Open a push request any time you're ready!
 
-This is <b>NOT</b> on MIT license!!! <br />
-Don't copy the code and publish it as yours, <br />
-but you are free to use it freely and edit it <br />
+Check out my other projects!
 
 ### Ciao!

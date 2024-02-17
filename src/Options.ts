@@ -10,7 +10,7 @@ const default_options = {
     img_size_y:70, // Y size of the image
     img_offset_x: 0, // X offset of the image attached to the last block of the rope, if 0 set to half of the width;
     img_offset_y: 0, // Y offset of image attached to the last block of the rope, if 0 then is calculated to 80% of immage
-    img_weight:2, // Weight of the image
+    img_weight:1, // Weight of the image
     img_rotate_target_index:0, // Reference point which img rotation is based of, can be from range 0 to quantity-2
     color: "#000", //Color of the blocks creating the rope, try transparent ;)
     gravity:0.5, //Gravity strength, the higher the number, the gigher is gravity pulling down force per frame
