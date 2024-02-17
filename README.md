@@ -50,24 +50,24 @@ export default function MyComponent(){
 )}
 ```
 
-###Advanced Options:
+### Advanced Options:
 
 Here is a description of more advanced options:
 
-* img_rotate_target_index
+* <b>img_rotate_target_index</b><br />
     This option sets the reference point for rotation of the image. By default it is set to the anchor point of the rope, therefore index 0.
-* bounce_type
+*  <b>bounce_type</b><br />
     This options can be set either to -1,-2,-3 or 0
     -1 allows only bounces off the floor
     -2 allows bounces off the floor and walls
     -3 allows bounces from every wall of rectangle
     0 is no bounces at all
 
-* verlet_calculation_per_frame
+*  <b>verlet_calculation_per_frame</b><br />
     Sets how much the correction of the objects is calculated per one frame
     Package callculates the disproportion between real distance and target distance betwen blocks, and tries to correct it. The more time it does it per frame, the real distance lim->target distance, but it will never reach it exactly. In other words, the more calculations, the more realistic the integration looks, but it costs with the speed, and to much calculations looks very artificial
 
-* verlet_extend_length
+*  <b>verlet_extend_length</b><br />
     Extends the lenght of the object to always cover the holes between objects building the line. Can look very blank/flat when used
 
 To see all the options open the package file called Options.ts <br />
