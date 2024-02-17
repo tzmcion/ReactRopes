@@ -10,10 +10,12 @@ type props = {
     height:number,
     onHover?: (point:Point, event:Event) => void,
     options?: typeof default_options
+    className?:string
+    id?:string
 }
 
 
-export default function BGCanvas({src,width,height,onHover = () =>{},options = default_options}:props) {
+export default function BGCanvas({src,width,height,id,className,onHover = () =>{},options = default_options}:props) {
 
   const canvas_ref = useRef<HTMLCanvasElement>(null);
   const [dimensions,set_dimensions] = useState<{width:number,height:number}>({width:width,height:height});
@@ -70,6 +72,6 @@ export default function BGCanvas({src,width,height,onHover = () =>{},options = d
 
 
   return (
-    <canvas ref={canvas_ref} onMouseMove={handleMouseMove} width={dimensions.width} height={dimensions.height} className='BGCanvas'>BGCanvas</canvas>
+    <canvas className={className} id={id} ref={canvas_ref} onMouseMove={handleMouseMove} width={dimensions.width} height={dimensions.height} />
   )
 }
