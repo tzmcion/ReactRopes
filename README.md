@@ -8,7 +8,7 @@ A tool do display image as dynamicaly animated object on a line or rope
 
 Download the package:
 ```node
-npm install package-not-yet-published-so-there-is-no-name
+npm install react-image-rope
 ```
 
 Import rope-image from the package and image which you want to render
@@ -22,7 +22,7 @@ import my_image from './my_image.png'  //.gif is not supported
 Than use in the component:
 
 ```jsx
-    <RopeImage className='LoveU' width={250} height={250} src={my_image}/>
+<RopeImage className='LoveU' width={250} height={250} src={my_image}/>
 ```
 
 ## Options
